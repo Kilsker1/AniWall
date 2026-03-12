@@ -1,4 +1,3 @@
-✦ AniWall
 AniWall is a sleek, lightweight desktop wallpaper engine built with Electron. It pulls high-quality anime and general wallpapers from popular APIs and lets you instantly crop, save, or apply them to any of your monitors.
 
 ✨ Features
