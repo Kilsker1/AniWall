@@ -19,25 +19,6 @@ Clickable Tags: Click any tag on an image to instantly start a new Wallhaven sea
 🚀 Prerequisites
 OS: Windows (AniWall uses the native Windows IDesktopWallpaper COM API via PowerShell to set wallpapers across multiple monitors).
 
-Node.js: Ensure you have Node.js installed to run and build the app.
-
-🛠️ Installation & Setup
-Clone or download the repository.
-
-Open a terminal in the project folder and install the dependencies:
-
-Bash
-npm install
-Start the app in development mode:
-
-Bash
-npm start
-⚙️ Building the .exe
-To package the app into a standalone Windows installer/executable, run your packager command. (If you haven't set up Electron Forge or Builder in your package.json, you can run the builder directly):
-
-Bash
-npx electron-builder --win
-The finished .exe will be located in your dist or out folder.
 
 🔑 Wallhaven API Key (Optional but Recommended)
 By default, Wallhaven limits how many searches you can do per minute and hides NSFW/Sketchy content.
