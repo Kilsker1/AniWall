@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; img-src * data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src *;">
+  <title>AniWall</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="titlebar" id="titlebar">
+    <div class="titlebar-drag"></div>
+    <div class="titlebar-logo">✦ AniWall</div>
+    <div class="titlebar-drag"></div>
+    <div class="titlebar-controls">
+      <button class="wbtn wbtn-min" id="btnMin" title="Minimize">
+        <svg width="11" height="1" viewBox="0 0 11 1"><rect width="11" height="1" fill="currentColor"/></svg>
+      </button>
+      <button class="wbtn wbtn-max" id="btnMax" title="Maximize">
+        <svg width="10" height="10" viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9" rx="1" stroke="currentColor" fill="none"/></svg>
+      </button>
+      <button class="wbtn wbtn-close" id="btnClose" title="Close">
+        <svg width="10" height="10" viewBox="0 0 10 10">
+          <line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.4"/>
+          <line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-src="all">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/>
+            <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".6"/>
+            <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".6"/>
+            <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".9"/>
+          </svg>
+        </span>
+        <span class="nav-label">All Sources</span>
+      </button>
+
+      <button class="nav-item" data-src="favorites">
+        <span class="nav-icon" style="color:#fc5c7d">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </span>
+        <span class="nav-label">Collection</span>
+      </button>
+
+      <button class="nav-item" data-src="wallhaven">
+        <span class="nav-icon nav-dot" style="--c:#7c5cfc">
+          <span class="dot-pulse"></span>
+        </span>
+        <span class="nav-label">Wallhaven</span>
+        <span class="nav-tag wh-tag">HD</span>
+      </button>
+
+      <button class="nav-item" data-src="waifupics">
+        <span class="nav-icon nav-dot" style="--c:#fc5c7d">
+          <span class="dot-pulse"></span>
+        </span>
+        <span class="nav-label">Waifu.pics</span>
+      </button>
+
+      <button class="nav-item" data-src="nekosbest">
+        <span class="nav-icon nav-dot" style="--c:#3ecfb2">
+          <span class="dot-pulse"></span>
+        </span>
+        <span class="nav-label">Nekos.best</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="nav-settings" id="btnSettings" title="Settings">
+        <svg width="14" height="14" viewBox="0 0 15 15" fill="none">
+          <path d="M7.5 9.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M12.2 5.8c.1-.3.2-.5.2-.8a5.2 5.2 0 0 0-.2-.8l1.2-1-.9-1.6-1.5.5c-.4-.3-.9-.6-1.4-.7L9.2 0H5.8L5.4 1.4C4.9 1.5 4.4 1.8 4 2.1l-1.5-.5L1.6 3.2l1.2 1c-.1.3-.2.5-.2.8s.1.5.2.8l-1.2 1 .9 1.6 1.5-.5c.4.3.9.6 1.4.7L5.8 10h3.4l.4-1.4c.5-.1 1-.4 1.4-.7l1.5.5.9-1.6-1.2-1Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/>
+        </svg>
+        Settings
+      </button>
+      <div class="stat-card">
+        <span class="stat-num" id="statCount">0</span>
+        <span class="stat-label">Loaded</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="statSaved">0</span>
+        <span class="stat-label">Saved</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="skeleton-grid" id="skeletonGrid"></div>
+    <div class="grid" id="grid"></div>
+    <div class="load-more-wrap" id="loadMoreWrap">
+      <button class="btn-load" id="btnLoad">
+        <span class="btn-load-text">Load More</span>
+        <span class="btn-load-spinner"></span>
+      </button>
+    </div>
+  </main>
+
+  <div class="settings-backdrop" id="settingsBackdrop"></div>
+  <aside class="settings-panel" id="settingsPanel">
+
+    <div class="sp-header">
+      <span class="sp-title">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" style="flex-shrink:0">
+          <path d="M7.5 9.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M12.2 5.8c.1-.3.2-.5.2-.8a5.2 5.2 0 0 0-.2-.8l1.2-1-.9-1.6-1.5.5c-.4-.3-.9-.6-1.4-.7L9.2 0H5.8L5.4 1.4C4.9 1.5 4.4 1.8 4 2.1l-1.5-.5L1.6 3.2l1.2 1c-.1.3-.2.5-.2.8s.1.5.2.8l-1.2 1 .9 1.6 1.5-.5c.4.3.9.6 1.4.7L5.8 10h3.4l.4-1.4c.5-.1 1-.4 1.4-.7l1.5.5.9-1.6-1.2-1Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/>
+        </svg>
+        Settings
+      </span>
+      <button class="sp-close" id="btnSettingsClose">✕</button>
+    </div>
+
+    <div class="sp-body">
+
+      <section class="sp-section">
+        <div class="sp-section-header">
+          <span class="sp-dot" style="background:#7c5cfc; box-shadow:0 0 8px #7c5cfc"></span>
+          Wallhaven
+        </div>
+
+        <label class="sp-field">
+          <span class="sp-label">API Key
+            <span class="sp-hint">Enables higher rate limits &amp; personal favorites</span>
+          </span>
+          <div class="sp-input-wrap">
+            <input id="wh-apikey" type="password" class="sp-input" placeholder="Paste your API key…" autocomplete="off" spellcheck="false">
+            <button class="sp-eye" id="btnWhEye" title="Show/hide">
+              <svg id="eyeIcon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M1 7c1.5-3 8.5-3 12 0-3.5 3-10.5 3-12 0Z" stroke="currentColor" stroke-width="1.3"/>
+                <circle cx="7" cy="7" r="1.8" stroke="currentColor" stroke-width="1.3"/>
+              </svg>
+            </button>
+          </div>
+        </label>
+
+        <label class="sp-field">
+          <span class="sp-label">Search / Tags</span>
+          <input id="wh-query" type="text" class="sp-input" placeholder="e.g. nature, fantasy, city…">
+        </label>
+
+        <div class="sp-row">
+          <label class="sp-field">
+            <span class="sp-label">Sorting</span>
+            <select id="wh-sorting" class="sp-select">
+              <option value="random">Random</option>
+              <option value="date_added">Date Added</option>
+              <option value="relevance">Relevance</option>
+              <option value="views">Most Viewed</option>
+              <option value="favorites">Most Favorited</option>
+              <option value="toplist">Top List</option>
+            </select>
+          </label>
+          <label class="sp-field">
+            <span class="sp-label">Order</span>
+            <select id="wh-order" class="sp-select">
+              <option value="desc">Descending</option>
+              <option value="asc">Ascending</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="sp-field">
+          <span class="sp-label">Minimum Resolution</span>
+          <select id="wh-minres" class="sp-select">
+            <option value="">Any</option>
+            <option value="1280x720">1280×720 (HD)</option>
+            <option value="1920x1080">1920×1080 (FHD)</option>
+            <option value="2560x1440">2560×1440 (QHD)</option>
+            <option value="3840x2160">3840×2160 (4K)</option>
+          </select>
+        </label>
+
+        <div class="sp-field">
+          <span class="sp-label">Categories</span>
+          <div class="sp-checks">
+            <label class="sp-check"><input type="checkbox" id="wh-cat-general" value="general"> General</label>
+            <label class="sp-check"><input type="checkbox" id="wh-cat-anime"   value="anime"  > Anime</label>
+            <label class="sp-check"><input type="checkbox" id="wh-cat-people"  value="people" > People</label>
+          </div>
+        </div>
+
+        <div class="sp-field">
+          <span class="sp-label">Purity
+            <span class="sp-hint">Sketchy/NSFW requires a valid API key</span>
+          </span>
+          <div class="sp-checks">
+            <label class="sp-check sp-check-sfw">
+              <input type="checkbox" id="wh-purity-sfw" value="sfw"> SFW
+            </label>
+            <label class="sp-check sp-check-sketchy">
+              <input type="checkbox" id="wh-purity-sketchy" value="sketchy"> Sketchy
+            </label>
+            <label class="sp-check sp-check-nsfw">
+              <input type="checkbox" id="wh-purity-nsfw" value="nsfw"> NSFW
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="sp-section">
+        <div class="sp-section-header">
+          <span class="sp-dot" style="background:#fc5c7d; box-shadow:0 0 8px #fc5c7d"></span>
+          Waifu.pics
+        </div>
+        <label class="sp-field">
+          <span class="sp-label">Purity</span>
+          <select id="wp-purity" class="sp-select">
+            <option value="sfw">SFW only</option>
+            <option value="nsfw">NSFW only</option>
+            <option value="both">SFW + NSFW</option>
+          </select>
+        </label>
+        <div class="sp-field" id="wp-sfw-group">
+          <span class="sp-label">SFW Categories</span>
+          <div class="sp-checks sp-checks-wrap" id="wp-sfw-cats"></div>
+        </div>
+        <div class="sp-field" id="wp-nsfw-group" style="display:none">
+          <span class="sp-label" style="color:#fc5c7d">NSFW Categories</span>
+          <div class="sp-checks sp-checks-wrap" id="wp-nsfw-cats"></div>
+        </div>
+      </section>
+
+      <section class="sp-section">
+        <div class="sp-section-header">
+          <span class="sp-dot" style="background:#3ecfb2; box-shadow:0 0 8px #3ecfb2"></span>
+          Nekos.best — Categories
+        </div>
+        <div class="sp-checks sp-checks-wrap" id="nb-cats">
+        </div>
+      </section>
+
+      <section class="sp-section">
+        <div class="sp-section-header">
+          <span class="sp-dot" style="background:#888; box-shadow:none"></span>
+          Display
+        </div>
+        <div class="sp-row">
+          <label class="sp-field">
+            <span class="sp-label">Columns</span>
+            <select id="disp-columns" class="sp-select">
+              <option value="auto">Auto (responsive)</option>
+              <option value="2">2 Columns</option>
+              <option value="3">3 Columns</option>
+              <option value="4">4 Columns</option>
+              <option value="5">5 Columns</option>
+              <option value="6">6 Columns</option>
+            </select>
+          </label>
+          <label class="sp-field">
+            <span class="sp-label">Orientation</span>
+            <select id="disp-orientation" class="sp-select">
+              <option value="both">Both (All)</option>
+              <option value="landscape">Horizontal</option>
+              <option value="portrait">Vertical</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="sp-footer">
+      <button class="sp-btn-save" id="btnSettingsSave">Save &amp; Reload</button>
+      <button class="sp-btn-cancel" id="btnSettingsCancel">Cancel</button>
+    </div>
+
+  </aside>
+
+  <div class="toast-stack" id="toastStack"></div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+
+    <button class="modal-x" id="modalCloseBtn">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+        <path d="M1 1l11 11M12 1 1 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="modal-content">
+      <div class="modal-img-wrap">
+        <div class="modal-glow" id="modalGlow"></div>
+        <img class="modal-img" id="modalImg" src="" alt="" crossorigin="anonymous">
+        <canvas class="crop-canvas" id="cropCanvas"></canvas>
+        <div class="crop-controls" id="cropControls">
+          <button class="crop-btn-cancel" id="btnCropCancel">Cancel</button>
+          <button class="crop-btn-confirm" id="btnCropConfirm">✓ Confirm</button>
+        </div>
+        <button class="modal-arrow modal-prev" id="modalPrev">‹</button>
+        <button class="modal-arrow modal-next" id="modalNext">›</button>
+        <div class="modal-img-footer">
+          <button class="modal-dl" id="modalDl">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <path d="M6.5 1v8M3 6l3.5 3.5L10 6M1 11h11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Download
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-panel" id="modalPanel">
+        <div class="mp-header">
+          <span class="modal-src-chip" id="modalSrcChip"></span>
+          <span class="mp-res" id="modalResLabel"></span>
+        </div>
+
+        <div class="mp-section">
+          <div class="mp-section-title">Tags</div>
+          <div class="mp-tags-spinner" id="modalTagsSpinner" style="display:none">
+            <span class="mts-dot"></span><span class="mts-dot"></span><span class="mts-dot"></span>
+          </div>
+          <div class="mp-tags" id="modalTags"></div>
+          <div class="mp-empty" id="modalNoTags" style="display:none">No tags available</div>
+        </div>
+
+        <div class="mp-section mp-wallpaper">
+          <div class="mp-section-title">Set as Wallpaper</div>
+
+          <label class="mp-label">Monitor</label>
+          <select id="wpMonitor" class="mp-select">
+            <option value="all">All Monitors</option>
+          </select>
+
+          <label class="mp-label">Crop Region</label>
+          <div class="mp-crop-preview" id="mpCropPreview">
+            <span class="mp-crop-info" id="mpCropInfo">Full image — no crop</span>
+          </div>
+          <button class="mp-crop-toggle" id="btnCrop">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+              <path d="M3 1v9h9M1 3h9v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.3" stroke-dasharray="2 1.5"/>
+            </svg>
+            Select Crop Region
+          </button>
+
+          <button class="mp-wallpaper-btn" id="btnSetWallpaper">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+              <rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/>
+              <rect x="3" y="7" width="8" height="4" rx="1" fill="currentColor" opacity=".6"/>
+              <circle cx="4.5" cy="4.5" r="1.5" fill="currentColor" opacity=".6"/>
+            </svg>
+            Apply Wallpaper
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
